@@ -1,0 +1,98 @@
+<!-- <!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تایید کد OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-4 shadow" style="width: 350px;">
+        <h4 class="text-center mb-3">کد تایید</h4>
+        <p class="text-muted small text-center">کد ارسال شده به شماره {{ phone }} را وارد کنید:</p>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} p-2 small">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <input type="text" name="otp" class="form-control text-center fs-4 tracking-wide" placeholder="----" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">تایید و ورود</button>
+        </form>
+    </div>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تایید کد OTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+    <div class="card p-4 shadow" style="width: 350px;">
+        <h4 class="text-center mb-3">کد تایید</h4>
+        <p class="text-muted small text-center">کد ارسال شده به شماره {{ phone }} را وارد کنید:</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} p-2 small">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <p id="timer-box" class="text-center small mb-2">
+            زمان باقی‌مانده:
+            <strong id="timer" dir="ltr" class="fs-5">--:--</strong>
+        </p>
+
+        <form method="POST">
+            <div class="mb-3">
+                <input type="text" name="otp" class="form-control text-center fs-4" placeholder="----" required>
+            </div>
+            <button type="submit" id="submit-btn" class="btn btn-success w-100">تایید و ورود</button>
+        </form>
+
+        <a href="/" class="btn btn-link btn-sm mt-2">دریافت کد جدید</a>
+    </div>
+
+    <script>
+        let t = {{ ttl }};  // ثانیه‌های باقی‌مانده از سرور
+        const timerEl = document.getElementById('timer');
+        const boxEl = document.getElementById('timer-box');
+        const btn = document.getElementById('submit-btn');
+
+        function fmt(s) {
+            const m = String(Math.floor(s / 60)).padStart(2, '0');
+            const sec = String(s % 60).padStart(2, '0');
+            return m + ':' + sec;
+        }
+
+        function render() {
+            if (t <= 0) {
+                boxEl.textContent = 'کد منقضی شد. لطفاً کد جدید دریافت کنید.';
+                boxEl.classList.add('text-danger');
+                btn.disabled = true;
+            } else {
+                timerEl.textContent = fmt(t);
+            }
+        }
+
+        render();
+        const iv = setInterval(() => {
+            t--;
+            render();
+            if (t <= 0) clearInterval(iv);
+        }, 1000);
+    </script>
+</body>
+</html>
